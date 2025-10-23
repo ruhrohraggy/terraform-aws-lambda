@@ -468,11 +468,11 @@ module "lambda_layer_poetry" {
 
   source_path = [
     {
-      path           = "${path.module}/../fixtures/python-app-poetry"
-      poetry_install = true
-      poetry_tmp_dir = "${path.cwd}/../fixtures"
-      # Patterns work correctly with poetry_install - only poetry files are needed
-      # The installed dependencies will be in the layer, but source files will be excluded
+      path             = "${path.module}/../fixtures/python-app-poetry"
+      poetry_install   = true
+      poetry_tmp_dir   = "${path.cwd}/../fixtures"
+      dependencies_only = true  # Only include poetry dependencies, not source files
+      # Patterns work correctly with dependencies_only - only poetry files are needed
       patterns = [
         "!ignore_please.txt", # Exclude this file
         "!index.py",          # Exclude source code

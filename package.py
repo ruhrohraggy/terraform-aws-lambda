@@ -837,6 +837,7 @@ class BuildPlanManager:
                     npm_requirements = claim.get(
                         "npm_requirements", claim.get("npm_package_json")
                     )
+                    dependencies_only = claim.get("dependencies_only", False)
                     runtime = claim.get("runtime", query.runtime)
 
                     if pip_requirements and runtime.startswith("python"):
@@ -881,9 +882,11 @@ class BuildPlanManager:
                                 tmp_dir=claim.get("npm_tmp_dir"),
                             )
 
-                    # Only zip the source path if not using dependency managers
-                    # (pip/poetry/npm handle their own zipping)
-                    if path and not (pip_requirements or poetry_install or npm_requirements):
+                    # Only zip the source path if:
+                    # 1. No dependency managers are used, OR
+                    # 2. dependencies_only flag is not set (backward compatibility)
+                    # When dependencies_only=true, only dependency manager output is zipped
+                    if path and not dependencies_only:
                         path = os.path.normpath(path)
                         step("zip", path, prefix)
                         if patterns:
